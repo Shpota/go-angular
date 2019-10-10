@@ -4,11 +4,12 @@ COPY webapp /webapp
 WORKDIR webapp
 RUN ng build --prod
 
-FROM golang:1.13.1-stretch AS GO_BUILD
+FROM golang:1.13.1-alpine AS GO_BUILD
+RUN apk --update add git
 WORKDIR /go/src/app
-RUN go get -d -v github.com/gorilla/mux
+RUN go get -u github.com/gorilla/mux
 COPY server.go /go/src/app/
-RUN CGO_ENABLED=0 go build -o /go/bin/server
+RUN go build -o /go/bin/server
 
 FROM alpine:3.10
 WORKDIR app
