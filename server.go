@@ -5,6 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	uuid "github.com/satori/go.uuid"
+	"log"
 	"net/http"
 )
 
@@ -33,7 +35,7 @@ func (a *App) start() {
 	r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
 	r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./webapp/dist/webapp/")))
-	http.ListenAndServe(":8080", r)
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func (a *App) getAllStudents(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +53,7 @@ func (a *App) addStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	s := student{}
 	err := json.NewDecoder(r.Body).Decode(&s)
+	s.ID = uuid.Must(uuid.NewV4()).String()
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
 	} else {
@@ -80,19 +83,17 @@ func (a *App) updateStudent(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) deleteStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	s := student{}
-	a.DB.First(&s, mux.Vars(r)["id"])
-	err := a.DB.Delete(s).Error
+	err := a.DB.Unscoped().Delete(student{ID: mux.Vars(r)["id"]}).Error
 	if err != nil {
 		sendErr(w, http.StatusInternalServerError, err.Error())
 	}
 }
 
 func sendErr(w http.ResponseWriter, code int, message string) {
-	response, _ := json.Marshal(map[string]string{"error": message})
+	resp, _ := json.Marshal(map[string]string{"error": message})
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	w.Write(response)
+	w.Write(resp)
 }
 
 func main() {
