@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{ student.id == undefined ? 'Add' : 'Edit'}} Student</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="student.name">
+  </mat-form-field>
+  <br/>
+  <mat-form-field>
+    <input type="number" placeholder="Age" matInput [(ngModel)]="student.age">
+  </mat-form-field>
+</div>
+<mat-dialog-actions>
+  <button mat-button *ngIf="student.id" [mat-dialog-close] (click)="delete()">
+    Delete
+  </button>
+  <button mat-button [mat-dialog-close] (click)="save()">Save</button>
+</mat-dialog-actions>
