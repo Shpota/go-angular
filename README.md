@@ -1,27 +1,43 @@
 A simple web application writen with Go and Angular
 ===================================================
+I implemented this application while evaluating Go. 
+On the back end side, I used 
+[gorilla/mux](https://github.com/gorilla/mux) for 
+routing, [Gorm](https://github.com/jinzhu/gorm) as an 
+ORM engine and 
+[satori/go.uuid](https://github.com/satori/go.uuid) 
+for UUID generation. On the front end side, I used 
+[Angular 8](https://angular.io/) and 
+[Angular Material](https://material.angular.io/).
 
-## How to run
+![Showcase](showcase/showcase.gif)
+
+## System requirements 
+You need to have [Docker](https://www.docker.com) 
+installed in order to build and run the application.
+No additional tools required.
+
+## How to build and run
 1. Create a Docker network:
     ```shell script
     docker network create students-net
     ```
 2. Start the DB:
     ```shell script
-    docker run -p 5432:5432 \
+    docker run \
       -e POSTGRES_USER=go \
       -e POSTGRES_PASSWORD=go \
       -e POSTGRES_DB=go \
-      --name students \
+      --name students-db \
       --net=students-net \
       postgres:11.5
     ```
-3. Build that application image:
+3. Build the application image:
     ```shell script
-    docker build -t students .
+    docker build -t students-app .
     ```
 4. Start the application container:
     ```shell script
-    docker run -p 8080:8080 --net=students-net students
+    docker run -p 8080:8080 --net=students-net students-app
     ```
 Access the application via http://localhost:8080

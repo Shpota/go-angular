@@ -23,7 +23,7 @@ type App struct {
 func (a *App) start() {
 	db, err := gorm.Open(
 		"postgres",
-		"host=students user=go password=go dbname=go sslmode=disable")
+		"host=students-db user=go password=go dbname=go sslmode=disable")
 	if err != nil {
 		panic(err.Error())
 	}
