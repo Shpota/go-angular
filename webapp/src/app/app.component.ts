@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {StudentDialog} from "./student-dialog/student-dialog.component";
 import {StudentsService} from "./students.service";
 import {Student} from "./student";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,11 @@ import {Student} from "./student";
   styleUrls: ['./app.component.scss'],
   providers: [StudentsService]
 })
-export class AppComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'age'];
+export class AppComponent implements OnInit, OnDestroy {
+  displayedColumns = ['name', 'age'];
   dataSource: Student[] = [];
+  getAllSubscription: Subscription;
+  dialogSubscription: Subscription;
 
   constructor(public dialog: MatDialog, public service: StudentsService) {}
 
@@ -20,20 +23,29 @@ export class AppComponent implements OnInit {
     this.openDialog(new Student(st.id, st.name, st.age));
   }
 
-  ngOnInit(): void {
-    this.loadStudentsList()
-  }
-
   openNewDialog() {
     this.openDialog(new Student());
   }
 
   private openDialog(st: Student) {
-    this.dialog.open(StudentDialog, {data: st, minWidth: '30%'})
+    this.dialogSubscription = this.dialog
+      .open(StudentDialog, {data: st, minWidth: '30%'})
       .afterClosed().subscribe(() => this.loadStudentsList());
   }
 
-  loadStudentsList() {
-    this.service.getAll().subscribe(students => this.dataSource = students);
+  private loadStudentsList() {
+    this.getAllSubscription = this.service.getAll()
+      .subscribe(students => this.dataSource = students);
+  }
+
+  ngOnInit(): void {
+    this.loadStudentsList();
+  }
+
+  ngOnDestroy(): void {
+    this.getAllSubscription.unsubscribe();
+    if (this.dialogSubscription) {
+      this.dialogSubscription.unsubscribe();
+    }
   }
 }
