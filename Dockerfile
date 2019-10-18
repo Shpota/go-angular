@@ -1,8 +1,8 @@
 FROM node:12.11 AS ANGULAR_BUILD
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@8.3.12
 COPY webapp /webapp
 WORKDIR webapp
-RUN ng build --prod
+RUN npm install && ng build --prod
 
 FROM golang:1.13.1-alpine AS GO_BUILD
 RUN apk --update add git
