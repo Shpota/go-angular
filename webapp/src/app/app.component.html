@@ -5,13 +5,13 @@
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <th mat-header-cell *matHeaderCellDef [style.width.%]="60">Name</th>
     <td mat-cell *matCellDef="let student">{{ student.name }}</td>
     <td mat-footer-cell *matFooterCellDef></td>
   </ng-container>
 
   <ng-container matColumnDef="age">
-    <th mat-header-cell *matHeaderCellDef>Age</th>
+    <th mat-header-cell *matHeaderCellDef [style.width.%]="40">Age</th>
     <td mat-cell *matCellDef="let student">{{ student.age }}</td>
     <td mat-footer-cell *matFooterCellDef>
       <button mat-button class="add-button" (click)="openNewDialog()">Add</button>
