@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {StudentsService} from "../students.service";
 import {Student} from "../student";
 import { Subscription } from 'rxjs';
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'student-dialog',
@@ -11,6 +12,7 @@ import { Subscription } from 'rxjs';
   providers: [StudentsService]
 })
 export class StudentDialog implements OnDestroy {
+  formControl = new FormControl('', Validators.required);
   addSubscription: Subscription;
   updateSubscription: Subscription;
   deleteSubscription: Subscription;
