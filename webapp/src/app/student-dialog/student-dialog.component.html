@@ -2,14 +2,16 @@
   <h1 mat-dialog-title>{{ student.id ? 'Edit' : 'Add' }} Student</h1>
   <div mat-dialog-content>
     <mat-form-field>
-      <input matInput placeholder="Name" name="name" formControlName="name" required>
+      <input matInput placeholder="Name" formControlName="name"
+             [errorStateMatcher]="errorStateMatcher" required>
       <mat-error *ngIf="hasError('name', 'required')">
         Name is required
       </mat-error>
     </mat-form-field>
     <br/>
     <mat-form-field>
-      <input matInput type="number" placeholder="Age" formControlName="age" required>
+      <input matInput type="number" placeholder="Age" formControlName="age"
+             [errorStateMatcher]="errorStateMatcher" required>
       <mat-error *ngIf="hasError('age', 'required')">
         Age is required
       </mat-error>

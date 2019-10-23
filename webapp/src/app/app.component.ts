@@ -8,8 +8,7 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [StudentsService]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
   displayedColumns = ['name', 'age'];
@@ -23,17 +22,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.openDialog(new Student(st.id, st.name, st.age));
   }
 
-  openNewDialog() {
+  openNewDialog(): void {
     this.openDialog(new Student());
   }
 
-  private openDialog(st: Student) {
+  private openDialog(st: Student): void {
     this.dialogSubscription = this.dialog
       .open(StudentDialog, {data: st, minWidth: '30%'})
       .afterClosed().subscribe(() => this.loadStudentsList());
   }
 
-  private loadStudentsList() {
+  private loadStudentsList(): void {
     this.getAllSubscription = this.service.getAll()
       .subscribe(students => this.dataSource = students);
   }

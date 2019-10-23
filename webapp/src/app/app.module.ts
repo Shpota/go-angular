@@ -12,6 +12,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {HttpClientModule} from "@angular/common/http";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {StudentsService} from "./students.service";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,9 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatToolbarModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    StudentsService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [StudentDialog]
 })

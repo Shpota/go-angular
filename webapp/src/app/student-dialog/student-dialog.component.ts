@@ -4,22 +4,23 @@ import {StudentsService} from "../students.service";
 import {Student} from "../student";
 import {Subscription} from 'rxjs';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {InstantErrorStateMatcher} from "./instant-error-state.matcher";
 
 @Component({
   selector: 'student-dialog',
   templateUrl: 'student-dialog.component.html',
-  styleUrls: ['student-dialog.component.scss'],
-  providers: [StudentsService]
+  styleUrls: ['student-dialog.component.scss']
 })
 export class StudentDialog implements OnDestroy {
   controlGroup: FormGroup;
+  errorStateMatcher = new InstantErrorStateMatcher();
   addSubscription: Subscription;
   updateSubscription: Subscription;
   deleteSubscription: Subscription;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public student: Student,
-    public dialogRef: MatDialogRef<Student>,
+    public dialogRef: MatDialogRef<StudentDialog>,
     public service: StudentsService
   ) {
     this.controlGroup = new FormGroup({
@@ -30,7 +31,7 @@ export class StudentDialog implements OnDestroy {
     });
   }
 
-  save() {
+  save(): void {
     this.student.name = this.formValue('name');
     this.student.age = this.formValue('age');
     if (!this.student.id) {
@@ -42,17 +43,13 @@ export class StudentDialog implements OnDestroy {
     }
   }
 
-  delete() {
+  delete(): void {
     this.deleteSubscription = this.service.delete(this.student.id)
       .subscribe(this.dialogRef.close);
   }
 
   hasError(controlName: string, errorCode: string): boolean {
     return !this.controlGroup.valid && this.controlGroup.hasError(errorCode, [controlName]);
-  }
-
-  formValue(controlName: string) {
-    return this.controlGroup.get(controlName).value;
   }
 
   ngOnDestroy(): void {
@@ -65,5 +62,9 @@ export class StudentDialog implements OnDestroy {
     if (this.deleteSubscription) {
       this.deleteSubscription.unsubscribe();
     }
+  }
+
+  private formValue(controlName: string): any {
+    return this.controlGroup.get(controlName).value;
   }
 }
