@@ -45,7 +45,10 @@ func (a *App) getAllStudents(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		sendErr(w, http.StatusInternalServerError, err.Error())
 	} else {
-		json.NewEncoder(w).Encode(all)
+		err = json.NewEncoder(w).Encode(all)
+		if err != nil {
+			sendErr(w, http.StatusInternalServerError, err.Error())
+		}
 	}
 }
 
@@ -91,9 +94,7 @@ func (a *App) deleteStudent(w http.ResponseWriter, r *http.Request) {
 
 func sendErr(w http.ResponseWriter, code int, message string) {
 	resp, _ := json.Marshal(map[string]string{"error": message})
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(resp)
+	http.Error(w, string(resp), code)
 }
 
 func main() {
