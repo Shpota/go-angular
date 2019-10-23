@@ -5,3 +5,7 @@ mat-form-field {
 mat-dialog-actions {
   justify-content: flex-end;
 }
+
+.mat-dialog-content {
+  overflow-y: hidden;
+}

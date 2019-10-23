@@ -8,10 +8,11 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatDialogModule} from "@angular/material/dialog";
 import {StudentDialog} from "./student-dialog/student-dialog.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {HttpClientModule} from "@angular/common/http";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {StudentsService} from "./students.service";
 
 @NgModule({
   declarations: [
@@ -28,9 +29,12 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatFormFieldModule,
     FormsModule,
     HttpClientModule,
-    MatToolbarModule
+    MatToolbarModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    StudentsService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [StudentDialog]
 })

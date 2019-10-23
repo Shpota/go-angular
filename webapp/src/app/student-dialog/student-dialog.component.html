@@ -1,20 +1,33 @@
-<form class="mat-dialog-content" #formControl="ngForm">
+<form class="mat-dialog-content" [formGroup]="controlGroup">
   <h1 mat-dialog-title>{{ student.id ? 'Edit' : 'Add' }} Student</h1>
   <div mat-dialog-content>
     <mat-form-field>
-      <input matInput placeholder="Name" name="name" [(ngModel)]="student.name" required>
-      <mat-error *ngIf="formControl.invalid">Name is required</mat-error>
+      <input matInput placeholder="Name" formControlName="name"
+             [errorStateMatcher]="errorStateMatcher" required>
+      <mat-error *ngIf="hasError('name', 'required')">
+        Name is required
+      </mat-error>
     </mat-form-field>
     <br/>
     <mat-form-field>
-      <input type="number" placeholder="Age" name="age" matInput [(ngModel)]="student.age" required>
-      <mat-error *ngIf="formControl.invalid">Age is required</mat-error>
+      <input matInput type="number" placeholder="Age" formControlName="age"
+             [errorStateMatcher]="errorStateMatcher" required>
+      <mat-error *ngIf="hasError('age', 'required')">
+        Age is required
+      </mat-error>
+      <mat-error *ngIf="hasError('age', 'min')">
+        Age must be greater than 0
+      </mat-error>
+      <mat-error *ngIf="hasError('age', 'max')">
+        Age must be lower than 100
+      </mat-error>
     </mat-form-field>
   </div>
   <mat-dialog-actions>
     <button mat-button *ngIf="student.id" [mat-dialog-close] (click)="delete()">
       Delete
     </button>
-    <button mat-button [mat-dialog-close] (click)="save()" [disabled]="!formControl.valid">Save</button>
+    <button mat-button [mat-dialog-close] (click)="save()"
+            [disabled]="!controlGroup.valid">Save</button>
   </mat-dialog-actions>
 </form>
