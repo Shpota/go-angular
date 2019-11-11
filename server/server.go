@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
 )
@@ -56,7 +56,7 @@ func (a *App) addStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	s := student{}
 	err := json.NewDecoder(r.Body).Decode(&s)
-	s.ID = uuid.Must(uuid.NewV4()).String()
+	s.ID = uuid.New().String()
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
 	} else {

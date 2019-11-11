@@ -5,13 +5,8 @@ WORKDIR webapp
 RUN npm install && ng build --prod
 
 FROM golang:1.13.1-alpine AS GO_BUILD
-RUN apk --update add git
-WORKDIR /go/src/app
-RUN go get -u github.com/gorilla/mux && \
-    go get -u github.com/satori/go.uuid && \
-    go get -u github.com/jinzhu/gorm && \
-    go get -u github.com/jinzhu/gorm/dialects/postgres
-COPY server.go /go/src/app/
+COPY server /server
+WORKDIR /server
 RUN go build -o /go/bin/server
 
 FROM alpine:3.10
