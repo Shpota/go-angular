@@ -17,31 +17,24 @@ type student struct {
 }
 
 type App struct {
-	DB *gorm.DB
+	db *gorm.DB
+	r  *mux.Router
 }
 
 func (a *App) start() {
-	db, err := gorm.Open(
-		"postgres",
-		"host=students-db user=go password=go dbname=go sslmode=disable")
-	if err != nil {
-		panic(err.Error())
-	}
-	a.DB = db
-	db.AutoMigrate(&student{})
-	r := mux.NewRouter()
-	r.HandleFunc("/students", a.getAllStudents).Methods("GET")
-	r.HandleFunc("/students", a.addStudent).Methods("POST")
-	r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
-	r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./webapp/dist/webapp/")))
-	log.Fatal(http.ListenAndServe(":8080", r))
+	a.db.AutoMigrate(&student{})
+	a.r.HandleFunc("/students", a.getAllStudents).Methods("GET")
+	a.r.HandleFunc("/students", a.addStudent).Methods("POST")
+	a.r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
+	a.r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
+	a.r.PathPrefix("/").Handler(http.FileServer(http.Dir("./webapp/dist/webapp/")))
+	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
 
 func (a *App) getAllStudents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var all []student
-	err := a.DB.Find(&all).Error
+	err := a.db.Find(&all).Error
 	if err != nil {
 		sendErr(w, http.StatusInternalServerError, err.Error())
 	} else {
@@ -60,7 +53,7 @@ func (a *App) addStudent(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
 	} else {
-		err = a.DB.Save(&s).Error
+		err = a.db.Save(&s).Error
 		if err != nil {
 			sendErr(w, http.StatusInternalServerError, err.Error())
 		} else {
@@ -77,7 +70,7 @@ func (a *App) updateStudent(w http.ResponseWriter, r *http.Request) {
 		sendErr(w, http.StatusBadRequest, err.Error())
 	} else {
 		s.ID = mux.Vars(r)["id"]
-		err = a.DB.Save(&s).Error
+		err = a.db.Save(&s).Error
 		if err != nil {
 			sendErr(w, http.StatusInternalServerError, err.Error())
 		}
@@ -86,7 +79,7 @@ func (a *App) updateStudent(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) deleteStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	err := a.DB.Unscoped().Delete(student{ID: mux.Vars(r)["id"]}).Error
+	err := a.db.Unscoped().Delete(student{ID: mux.Vars(r)["id"]}).Error
 	if err != nil {
 		sendErr(w, http.StatusInternalServerError, err.Error())
 	}
@@ -95,9 +88,4 @@ func (a *App) deleteStudent(w http.ResponseWriter, r *http.Request) {
 func sendErr(w http.ResponseWriter, code int, message string) {
 	resp, _ := json.Marshal(map[string]string{"error": message})
 	http.Error(w, string(resp), code)
-}
-
-func main() {
-	app := App{}
-	app.start()
 }
