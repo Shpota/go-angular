@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/Shpota/go-angular.svg?branch=master)](https://travis-ci.com/Shpota/go-angular)
+
 A simple web application writen with Go and Angular
 ===================================================
 I implemented this application while evaluating Go. 
@@ -5,7 +7,7 @@ On the back end side, I used
 [gorilla/mux](https://github.com/gorilla/mux) for 
 routing, [Gorm](https://github.com/jinzhu/gorm) as an 
 ORM engine and 
-[satori/go.uuid](https://github.com/satori/go.uuid) 
+[google/uuid](https://github.com/google/uuid) 
 for UUID generation. On the front end side, I used 
 [Angular 8](https://angular.io/) and 
 [Angular Material](https://material.angular.io/).
