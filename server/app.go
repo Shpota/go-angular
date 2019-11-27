@@ -37,43 +37,43 @@ func (a *App) getAllStudents(w http.ResponseWriter, r *http.Request) {
 	err := a.db.Find(&all).Error
 	if err != nil {
 		sendErr(w, http.StatusInternalServerError, err.Error())
-	} else {
-		err = json.NewEncoder(w).Encode(all)
-		if err != nil {
-			sendErr(w, http.StatusInternalServerError, err.Error())
-		}
+		return
+	}
+	err = json.NewEncoder(w).Encode(all)
+	if err != nil {
+		sendErr(w, http.StatusInternalServerError, err.Error())
 	}
 }
 
 func (a *App) addStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	s := student{}
+	var s student
 	err := json.NewDecoder(r.Body).Decode(&s)
-	s.ID = uuid.New().String()
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	s.ID = uuid.New().String()
+	err = a.db.Save(&s).Error
+	if err != nil {
+		sendErr(w, http.StatusInternalServerError, err.Error())
 	} else {
-		err = a.db.Save(&s).Error
-		if err != nil {
-			sendErr(w, http.StatusInternalServerError, err.Error())
-		} else {
-			w.WriteHeader(http.StatusCreated)
-		}
+		w.WriteHeader(http.StatusCreated)
 	}
 }
 
 func (a *App) updateStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	s := student{}
+	var s student
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
-	} else {
-		s.ID = mux.Vars(r)["id"]
-		err = a.db.Save(&s).Error
-		if err != nil {
-			sendErr(w, http.StatusInternalServerError, err.Error())
-		}
+		return;
+	}
+	s.ID = mux.Vars(r)["id"]
+	err = a.db.Save(&s).Error
+	if err != nil {
+		sendErr(w, http.StatusInternalServerError, err.Error())
 	}
 }
 

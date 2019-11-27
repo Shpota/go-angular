@@ -17,27 +17,27 @@ func TestGetAllStudents(t *testing.T) {
 	st := student{ID: "id-1", Age: 20, Name: "John Doe"}
 	app.db.Save(st)
 	req, _ := http.NewRequest("GET", "/students", nil)
-	rr := httptest.NewRecorder()
+	r := httptest.NewRecorder()
 	handler := http.HandlerFunc(app.getAllStudents)
 
-	handler.ServeHTTP(rr, req)
+	handler.ServeHTTP(r, req)
 
-	checkStatusCode(rr.Code, http.StatusOK, t)
-	checkContentType(rr, t)
-	checkBody(rr.Body, st, t)
+	checkStatusCode(r.Code, http.StatusOK, t)
+	checkContentType(r, t)
+	checkBody(r.Body, st, t)
 }
 
 func TestAddStudent(t *testing.T) {
 	app := initApp()
 	var rqBody = toReader(`{"name":"John Doe", "age":20}`)
 	req, _ := http.NewRequest("POST", "/students", rqBody)
-	rr := httptest.NewRecorder()
+	r := httptest.NewRecorder()
 	handler := http.HandlerFunc(app.addStudent)
 
-	handler.ServeHTTP(rr, req)
+	handler.ServeHTTP(r, req)
 
-	checkStatusCode(rr.Code, http.StatusCreated, t)
-	checkContentType(rr, t)
+	checkStatusCode(r.Code, http.StatusCreated, t)
+	checkContentType(r, t)
 	checkProperties(firstStudent(app), t)
 }
 
@@ -47,13 +47,13 @@ func TestUpdateStudent(t *testing.T) {
 	var rqBody = toReader(`{"name":"John Doe", "age":20}`)
 	req, _ := http.NewRequest("PUT", "/students/id", rqBody)
 	req = mux.SetURLVars(req, map[string]string{"id": "id-1"})
-	rr := httptest.NewRecorder()
+	r := httptest.NewRecorder()
 	handler := http.HandlerFunc(app.updateStudent)
 
-	handler.ServeHTTP(rr, req)
+	handler.ServeHTTP(r, req)
 
-	checkStatusCode(rr.Code, http.StatusOK, t)
-	checkContentType(rr, t)
+	checkStatusCode(r.Code, http.StatusOK, t)
+	checkContentType(r, t)
 	checkProperties(firstStudent(app), t)
 }
 
@@ -62,13 +62,13 @@ func TestDeleteStudent(t *testing.T) {
 	app.db.Save(student{ID: "id-1", Age: 20, Name: "John Doe"})
 	req, _ := http.NewRequest("DELETE", "/students/id", nil)
 	req = mux.SetURLVars(req, map[string]string{"id": "id-1"})
-	rr := httptest.NewRecorder()
+	r := httptest.NewRecorder()
 	handler := http.HandlerFunc(app.deleteStudent)
 
-	handler.ServeHTTP(rr, req)
+	handler.ServeHTTP(r, req)
 
-	checkStatusCode(rr.Code, http.StatusOK, t)
-	checkContentType(rr, t)
+	checkStatusCode(r.Code, http.StatusOK, t)
+	checkContentType(r, t)
 	checkDbIsEmpty(app.db, t)
 }
 
@@ -94,8 +94,8 @@ func checkStatusCode(code int, want int, t *testing.T) {
 	}
 }
 
-func checkContentType(rr *httptest.ResponseRecorder, t *testing.T) {
-	ct := rr.Header().Get("Content-Type")
+func checkContentType(r *httptest.ResponseRecorder, t *testing.T) {
+	ct := r.Header().Get("Content-Type")
 	if ct != "application/json" {
 		t.Errorf("Wrong Content Type: got %v want application/json", ct)
 	}
