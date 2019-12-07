@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/Shpota/go-angular.svg?branch=master)](https://travis-ci.com/Shpota/go-angular)
 
-A simple web application writen with Go and Angular
+A simple web application written with Go and Angular
 ===================================================
 I implemented this application while evaluating Go. 
 On the back end side, I used 
