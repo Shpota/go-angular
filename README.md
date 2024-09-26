@@ -1,7 +1,11 @@
-[![Build Status](https://travis-ci.com/Shpota/go-angular.svg?branch=master)](https://travis-ci.com/Shpota/go-angular)
-
 A simple web application written with Go and Angular
 ===================================================
+
+> ⚠ Disclaimer
+>
+> I created this project a while ago, and it might need to be updated. Check out **[Goxygen](https://github.com/Shpota/goxygen)** , a tool for creating modern web projects with Go and Angular, React, or Vue.
+
+
 I implemented this application while evaluating Go. 
 On the back end side, I used 
 [gorilla/mux](https://github.com/gorilla/mux) for 
@@ -9,7 +13,7 @@ routing, [Gorm](https://github.com/jinzhu/gorm) as an
 ORM engine and 
 [google/uuid](https://github.com/google/uuid) 
 for UUID generation. On the front end side, I used 
-[Angular 8](https://angular.io/) and 
+[Angular](https://angular.io/) and 
 [Angular Material](https://material.angular.io/).
 
 ![Showcase](showcase/showcase.gif)
